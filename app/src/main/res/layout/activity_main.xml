@@ -4,18 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     tools:context=".GameActivity">
-
-    <TextView
-        android:id="@+id/mistake_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:text="Mistakes:"
-        app:layout_constraintEnd_toStartOf="@+id/mistake_value"
-        app:layout_constraintHorizontal_bias="0.462"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wpm_label" />
 
     <TextView
         android:id="@+id/heading"
@@ -30,67 +20,104 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.044" />
 
+    <EditText
+        android:id="@+id/type_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:focusableInTouchMode="true"
+        android:inputType="textVisiblePassword|textMultiLine"
+        android:textColor="#00FFFFFF"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/heading"
+        app:layout_constraintVertical_bias="1.0"
+        android:cursorVisible="false"
+        />
+
     <TextView
-        android:id="@+id/time_value"
+        android:id="@+id/content_box"
         android:layout_width="408dp"
         android:layout_height="135dp"
-        android:layout_marginTop="204dp"
-        android:text="TextView"
+        android:layout_marginTop="160dp"
+        android:autoText="false"
+        android:background="#9C27B0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heading" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="124dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="time"
-        app:layout_constraintTop_toBottomOf="@+id/heading"
-        tools:layout_editor_absoluteX="116dp" />
-
-    <EditText
-        android:id="@+id/wpm_value"
-        android:layout_width="127dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
-        tools:layout_editor_absoluteX="115dp" />
-
-    <EditText
-        android:id="@+id/mistake_value"
-        android:layout_width="128dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/wpm_value"
-        tools:layout_editor_absoluteX="115dp" />
 
     <TextView
         android:id="@+id/time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:text="Time:"
-        app:layout_constraintEnd_toStartOf="@+id/editText"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/wpm_label"
+        app:layout_constraintEnd_toEndOf="@+id/wpm_label"
         app:layout_constraintTop_toBottomOf="@+id/heading" />
 
     <TextView
         android:id="@+id/wpm_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="WPM:"
-        app:layout_constraintEnd_toStartOf="@+id/wpm_value"
-        app:layout_constraintHorizontal_bias="0.474"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/mistake_label"
+        app:layout_constraintEnd_toEndOf="@+id/mistake_label"
         app:layout_constraintTop_toBottomOf="@+id/time_label" />
+
+    <TextView
+        android:id="@+id/mistake_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="Mistakes:"
+        app:layout_constraintBottom_toTopOf="@+id/content_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wpm_label" />
+
+    <TextView
+        android:id="@+id/time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/wpm_view"
+        app:layout_constraintStart_toEndOf="@+id/time_label"
+        app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+    <TextView
+        android:id="@+id/wpm_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/mistake_view"
+        app:layout_constraintStart_toEndOf="@+id/wpm_label"
+        app:layout_constraintTop_toBottomOf="@+id/time_view" />
+
+    <TextView
+        android:id="@+id/mistake_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/content_box"
+        app:layout_constraintStart_toEndOf="@+id/mistake_label"
+        app:layout_constraintTop_toBottomOf="@+id/wpm_view" />
+
+    <Button
+        android:id="@+id/open_key_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="92dp"
+        android:text="Open Keyboard"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
