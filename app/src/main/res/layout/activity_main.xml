@@ -4,19 +4,145 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     tools:context=".GameActivity">
 
     <TextView
         android:id="@+id/heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Menu"
+        android:text="Game"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.322"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.027" />
+        app:layout_constraintVertical_bias="0.044" />
+
+    <EditText
+        android:id="@+id/type_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@android:color/transparent"
+        android:cursorVisible="false"
+        android:ems="10"
+        android:focusableInTouchMode="true"
+        android:inputType="textVisiblePassword|textMultiLine"
+        android:textColor="#00FFFFFF"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/heading"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/content_box"
+        android:layout_width="408dp"
+        android:layout_height="135dp"
+        android:layout_marginTop="160dp"
+        android:autoText="false"
+        android:background="#9C27B0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+    <TextView
+        android:id="@+id/time_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time:"
+        app:layout_constraintBottom_toTopOf="@+id/wpm_label"
+        app:layout_constraintEnd_toEndOf="@+id/wpm_label"
+        app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+    <TextView
+        android:id="@+id/wpm_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WPM:"
+        app:layout_constraintBottom_toTopOf="@+id/mistake_label"
+        app:layout_constraintEnd_toEndOf="@+id/mistake_label"
+        app:layout_constraintTop_toBottomOf="@+id/time_label" />
+
+    <TextView
+        android:id="@+id/mistake_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="Mistakes:"
+        app:layout_constraintBottom_toTopOf="@+id/content_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wpm_label" />
+
+    <TextView
+        android:id="@+id/time_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/wpm_view"
+        app:layout_constraintStart_toEndOf="@+id/time_label"
+        app:layout_constraintTop_toBottomOf="@+id/heading" />
+
+    <Chronometer
+        android:id="@+id/stopwatch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/mistake_view"
+        app:layout_constraintStart_toEndOf="@+id/wpm_view"
+        app:layout_constraintTop_toBottomOf="@+id/time_view"
+        app:layout_constraintVertical_bias="0.071" />
+
+    <TextView
+        android:id="@+id/wpm_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="TextView"
+        app:layout_constraintBottom_toTopOf="@+id/mistake_view"
+        app:layout_constraintStart_toEndOf="@+id/wpm_label"
+        app:layout_constraintTop_toBottomOf="@+id/time_view" />
+
+    <TextView
+        android:id="@+id/mistake_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/game_stats_margin"
+        android:text="0"
+        app:layout_constraintBottom_toTopOf="@+id/content_box"
+        app:layout_constraintStart_toEndOf="@+id/mistake_label"
+        app:layout_constraintTop_toBottomOf="@+id/wpm_view" />
+
+    <Button
+        android:id="@+id/open_key_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="92dp"
+        android:text="Open Keyboard"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/pause_button"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="pause"
+        android:text="pause"
+        app:layout_constraintBottom_toTopOf="@+id/type_box"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.835"
+        app:layout_constraintStart_toEndOf="@+id/heading"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
