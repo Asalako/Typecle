@@ -77,33 +77,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wpm_label" />
 
-    <TextView
+    <Chronometer
         android:id="@+id/time_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/game_stats_margin"
-        android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/wpm_view"
         app:layout_constraintStart_toEndOf="@+id/time_label"
         app:layout_constraintTop_toBottomOf="@+id/heading" />
-
-    <Chronometer
-        android:id="@+id/stopwatch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/mistake_view"
-        app:layout_constraintStart_toEndOf="@+id/wpm_view"
-        app:layout_constraintTop_toBottomOf="@+id/time_view"
-        app:layout_constraintVertical_bias="0.071" />
 
     <TextView
         android:id="@+id/wpm_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/game_stats_margin"
-        android:text="TextView"
+        android:text="0"
         app:layout_constraintBottom_toTopOf="@+id/mistake_view"
         app:layout_constraintStart_toEndOf="@+id/wpm_label"
         app:layout_constraintTop_toBottomOf="@+id/time_view" />
@@ -113,7 +101,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/game_stats_margin"
-        android:text="0"
+        android:text="0.0"
         app:layout_constraintBottom_toTopOf="@+id/content_box"
         app:layout_constraintStart_toEndOf="@+id/mistake_label"
         app:layout_constraintTop_toBottomOf="@+id/wpm_view" />
