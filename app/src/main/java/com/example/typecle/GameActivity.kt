@@ -32,6 +32,7 @@ class GameActivity : AppCompatActivity() {
 
     private var editor: TextWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
+            //test using typebox.text ?: return
             if (typeBox.text.isEmpty()) {
                 return
             }
