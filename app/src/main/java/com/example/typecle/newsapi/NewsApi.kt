@@ -6,7 +6,9 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.RequestFuture
 import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 class NewsApi(context: Context, category: String, country:String) {
     private val apiKey = "9f959a18ab254fb381f031560e3d7e41"
@@ -17,45 +19,47 @@ class NewsApi(context: Context, category: String, country:String) {
     private var url: String
 
     init {
-        url = "https://newsapi.org/v2/top-headlines?page=1&pagesize=100&country=$country" +
-                "&category=$category&apiKey=$apiKey"
+        url = "#"
         request = Volley.newRequestQueue(context)
-        Log.d("url", url)
         getResponse()
-        Log.d("News", url)
+        Log.d("afterGetResponse", url)
     }
 
     private fun getResponse() {
-
+        val future = RequestFuture.newFuture<JSONObject>()
         val jsonRequest = JsonObjectRequest(Request.Method.GET, url, null,
             Response.Listener {
-                status = it.getString("status")
+                status = it.getJSONArray("articles").getJSONObject(0).getString("title")
                 totalResult = it.getInt("totalResults")
                 url = it.toString()
                 Log.d("results", totalResult.toString())
                 val jsonArr = it.getJSONArray("articles")
-//                for (i in 0 until jsonArr.length() ) {
-//                    val data = jsonArr.getJSONObject(i)
-//                    val currentArticle = Article(
-//                        data.getJSONObject("source").getString("name"),
-//                        data.getString("author"),
-//                        data.getString("title"),
-//                        data.getString("description"),
-//                        data.getString("url"),
-//                        data.getString("urlToImage"),
-//                        data.getString("publishedAt"),
-//                        data.getString("content")
-//                    )
-//                    articles.add(currentArticle)
-//                }
+                val list = mutableListOf<Article>()
+                for (i in 0 until jsonArr.length() ) {
+                    val data = jsonArr.getJSONObject(i)
+                    val currentArticle = Article(
+                        data.getJSONObject("source").getString("name"),
+                        data.getString("author"),
+                        data.getString("title"),
+                        data.getString("description"),
+                        data.getString("url"),
+                        data.getString("urlToImage"),
+                        data.getString("publishedAt"),
+                        data.getString("content")
+
+                    )
+                    list.add(currentArticle)
+                }
+                articles = list
+                Log.d("ere",articles.size.toString())
+
             },
             Response.ErrorListener { it.printStackTrace() })
-
         request.add(jsonRequest)
     }
 
-    fun getResult(): Int {
-        return totalResult
+    fun getResult(): String {
+        return status
     }
 
 }

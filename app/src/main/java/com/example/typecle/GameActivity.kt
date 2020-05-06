@@ -1,21 +1,23 @@
 package com.example.typecle
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.typecle.newsapi.Article
 import kotlin.math.floor
+import kotlin.text.Regex.Companion.escape
 
 class GameActivity : AppCompatActivity() {
 
-    private var content = "This is a passage for testing Typecle application in it's development " +
-            "stage, which is to be used within the game mode created."
     private var count = 0
     private var wordCount = 0
     private var wpm = 0.0
@@ -26,18 +28,20 @@ class GameActivity : AppCompatActivity() {
     private var status = false
 
     private lateinit var contentView: TextView
+    private lateinit var content: String
     private lateinit var typeBox: EditText
     private lateinit var stopWatch: Chronometer
     //private lateinit var pauseButton: Button
 
     private var editor: TextWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
-            //test using typebox.text ?: return
             if (typeBox.text.isEmpty()) {
                 return
             }
 
             if (content[count].isWhitespace()) {
+                Log.d("gameTestWpm", content[count].isWhitespace().toString() + " $wordCount|") //testing
+
                 wordCount++
                 if (wordCount % 2 == 0) {
                     calculateWPM()
@@ -66,8 +70,14 @@ class GameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val article = intent.getParcelableExtra<Article>("chosenArticle")
+
         contentView = findViewById(R.id.content_box)
-        setTextView()
+        contentView.text = article?.getContent()
+        content = article?.getContent().toString()
+        Log.d("gameTestContent", content)
+
         typeBox = findViewById(R.id.type_box)
         stopWatch = findViewById(R.id.time_view)
         //stopWatch.setOnChronometerTickListener {  } use to stop game after x amount of time 1hr
@@ -97,20 +107,17 @@ class GameActivity : AppCompatActivity() {
         typeBox.removeTextChangedListener(listener)
     }
 
-    private fun setTextView() {
-        val cView = this.contentView
-        cView.text = this.content
-    }
-
     //checks if the input is correct
     fun checkInput(value: Char) {
         //Toast.makeText(this, value, Toast.LENGTH_SHORT).show()
         val correctChar = content[count]
         if (value == correctChar) {
             content = content.replace(count, '_')
+            Log.d("gameTestCorrect", "$value = $correctChar") //testing
             contentView.text = content
             if (count < content.length - 1) {
                 count++
+                Log.d("gameTestCount", "$count") //testing
             }
             else {
                 stopStopWatch()
@@ -120,6 +127,7 @@ class GameActivity : AppCompatActivity() {
         }
         else {
             setMistakes()
+            Log.d("gameTestIncorrect", "$value != $correctChar") //testing
         }
     }
 
