@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1082150199171",
+    "firebase_url": "https://typecle.firebaseio.com",
+    "project_id": "typecle",
+    "storage_bucket": "typecle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1082150199171:android:c26a0fd78206f83095a0b6",
+        "android_client_info": {
+          "package_name": "com.example.typecle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1082150199171-dn1c5rnv5os6lr9ke7msiekeimjghrve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzT2UWNmcVj3xwSvVe1rFKG3L1Ox974ZA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1082150199171-dn1c5rnv5os6lr9ke7msiekeimjghrve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

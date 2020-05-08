@@ -34,7 +34,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_home"
-        tools:layout_editor_absoluteX="92dp" />
+        tools:layout_editor_absoluteX="92dp"
+        android:onClick="dbtest"
+        tools:ignore="OnClick" />
 
     <Button
         android:id="@+id/button_perfect_run"
@@ -45,7 +47,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_free_type"
-        tools:layout_editor_absoluteX="92dp" />
+        tools:layout_editor_absoluteX="92dp"
+        android:onClick="dbretrieve"
+        tools:ignore="OnClick" />
 
     <Button
         android:id="@+id/button_timed_trial"
