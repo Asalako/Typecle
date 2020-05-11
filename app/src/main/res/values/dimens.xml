@@ -10,4 +10,7 @@
     <dimen name="game_value_margin">40dp</dimen>
     <dimen name="game_stats_margin">20dp</dimen>
 
+    <!-- Pause dimensions -->
+    <dimen name="pause_margin">100dp</dimen>
+
 </resources>

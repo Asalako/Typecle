@@ -1,5 +1,6 @@
 package com.example.typecle
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,7 +32,8 @@ class GameActivity : AppCompatActivity() {
     private lateinit var content: String
     private lateinit var typeBox: EditText
     private lateinit var stopWatch: Chronometer
-    //private lateinit var pauseButton: Button
+    private lateinit var pauseDialog: Dialog
+    private lateinit var article: Article;
 
     private var editor: TextWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
@@ -71,11 +73,11 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val article = intent.getParcelableExtra<Article>("chosenArticle")
+        article = intent.getParcelableExtra<Article>("chosenArticle")
 
         contentView = findViewById(R.id.content_box)
-        contentView.text = article?.getContent()
-        content = article?.getContent().toString()
+        contentView.text = article.getContent()
+        content = article.getContent().toString()
         Log.d("gameTestContent", content)
 
         typeBox = findViewById(R.id.type_box)
@@ -85,21 +87,7 @@ class GameActivity : AppCompatActivity() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
         typeBox.addTextChangedListener(editor)
-
-        val startTime: TextWatcher = object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                startClock(this)
-            }
-
-        }
-
-        typeBox.addTextChangedListener(startTime)
+        addStartListener()
     }
 
     fun startClock(listener: TextWatcher) {
@@ -144,7 +132,7 @@ class GameActivity : AppCompatActivity() {
     }
 
     private fun calculateWPM() {
-        var minutes: Double =
+        val minutes: Double =
             ((SystemClock.elapsedRealtime() - stopWatch.base) / 1000).toDouble()/ 60
 
         val wpm = wordCount.toDouble() / minutes
@@ -156,7 +144,7 @@ class GameActivity : AppCompatActivity() {
 
     private fun startStopWatch() {
         if (!running) {
-            stopWatch.base = SystemClock.elapsedRealtime()
+            stopWatch.base = SystemClock.elapsedRealtime() - pauseOffset
             stopWatch.start()
             running = true
         }
@@ -172,18 +160,58 @@ class GameActivity : AppCompatActivity() {
 
     fun pause(v: View) {
         stopStopWatch()
+        //val playIcon = resources.getDrawable(R.drawable.ic_play_foreground)
+        pauseDialog = Dialog(this)
+        pauseDialog.setContentView(R.layout.pause_dialog)
+        //pauseDialog.setCancelable(false)
+        pauseDialog.show()
+    }
+
+    fun resume(v: View) {
+        startStopWatch()
+        pauseDialog.dismiss()
     }
 
     fun resetStopWatch(v: View) {
         stopWatch.base = SystemClock.elapsedRealtime()
         pauseOffset = 0
+        count = 0
+        wordCount = 0
+        wpm = 0.0
+        mistakes = 0
+        mistakeFlag = false
+        running = false
+        contentView.text = article.getContent()
+        content = article.getContent().toString()
+        stopStopWatch()
+        addStartListener()
+        pauseDialog.dismiss()
     }
 
     private fun String.replace(count: Int, value: Char): String {
         return this.substring(0,count) + value + this.substring(count+1)
     }
-    
 
+    private fun addStartListener() {
+        val startTime: TextWatcher = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                startClock(this)
+            }
+
+        }
+
+        typeBox.addTextChangedListener(startTime)
+    }
+
+    fun endGame() {
+
+    }
 
 
 }

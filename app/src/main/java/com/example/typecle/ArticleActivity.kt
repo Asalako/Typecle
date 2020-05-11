@@ -37,7 +37,7 @@ class ArticleActivity : AppCompatActivity() {
         Log.d("intentSent",category)
         val country = "gb"
 
-        textView = findViewById<TextView>(R.id.textView2)
+        //textView = findViewById<TextView>(R.id.textView2)
         layout = findViewById(R.id.article_layout)
 
         url = "https://newsapi.org/v2/top-headlines?page=1&pagesize=100&country=$country" +
