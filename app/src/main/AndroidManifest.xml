@@ -19,20 +19,20 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity">
-
-        </activity>
-        <activity android:name=".ArticleActivity" />
-        <activity android:name=".CategoriesActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ArticleActivity" />
+        <activity android:name=".CategoriesActivity">
+        </activity>
         <activity
             android:name=".GameActivity"
             android:label="@string/title_activity_menu"
             android:theme="@style/AppTheme.NoActionBar" />
+        <service android:name=".services.DbService"/>
         <receiver android:name=".notifications.NotificationReceiver"/>
     </application>
 
