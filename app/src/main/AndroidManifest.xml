@@ -13,14 +13,16 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".SignUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignInActivity" />
-        <activity android:name=".LoginActivity" />
         <activity android:name=".ArticleActivity" />
         <activity android:name=".CategoriesActivity" />
         <activity
