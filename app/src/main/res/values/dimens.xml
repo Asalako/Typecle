@@ -7,10 +7,16 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="button_margin">40dp</dimen>
 
+    <!-- Pause dimensions -->
+
     <dimen name="game_value_margin">40dp</dimen>
     <dimen name="game_stats_margin">20dp</dimen>
 
     <!-- Pause dimensions -->
     <dimen name="pause_margin">100dp</dimen>
+
+
+    <dimen name="article_btn_height">10sp</dimen>
+
 
 </resources>
