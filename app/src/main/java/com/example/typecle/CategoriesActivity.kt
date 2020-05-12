@@ -1,11 +1,23 @@
 package com.example.typecle
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.typecle.notifications.NotificationReceiver
+import com.example.typecle.services.DbService
+import com.example.typecle.services.DbWorker
 
 class CategoriesActivity : AppCompatActivity() {
 
@@ -40,5 +52,40 @@ class CategoriesActivity : AppCompatActivity() {
         val categoryIntent = Intent(this, ArticleActivity::class.java)
         categoryIntent.putExtra("category", category)
         startActivity(categoryIntent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        //startService(Intent(this, DbService::class.java))
+        //notificationTest()
+
+        val user: MutableMap<String, Any> = HashMap()
+        user["collection"] = "users"
+        user["function"] = 1
+        user["first"] = "Ada"
+        user["last"] = "Lovelace"
+        user["born"] = 1815
+
+        val data = Data.Builder().putAll(user).build()
+        val request = OneTimeWorkRequest.Builder(DbWorker::class.java).setInputData(data).build()
+
+
+        WorkManager.getInstance(this).enqueue(request)
+        val stats = WorkManager.getInstance(this).getWorkInfoByIdLiveData(request.id)
+            .observe(this, Observer {
+                Log.d("WM",it.state.name)
+            })
+
+    }
+
+    fun notificationTest() {
+        val broadcastIntent = Intent(this, NotificationReceiver::class.java)
+        val actionIntent = PendingIntent.getBroadcast(this, 0, broadcastIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT)
+
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val time = System.currentTimeMillis()
+        val buffer: Long = 1000 * 10
+        alarmManager.set(AlarmManager.RTC_WAKEUP,time+buffer, actionIntent)
     }
 }

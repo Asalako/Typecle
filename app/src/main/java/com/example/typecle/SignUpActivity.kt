@@ -7,6 +7,10 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.example.typecle.services.DbWorker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -55,21 +59,21 @@ class SignUpActivity : AppCompatActivity() {
                 task ->  if (!task.isSuccessful) {
                     Toast.makeText(this, "SignUp Unsuccessful", Toast.LENGTH_SHORT).show()
                 }
-                else {
+            else {
                 //if successful registration, store uid and email to db
-                    val newUser = hashMapOf<String, String>()
-                    newUser["username"] = user
-                    newUser["email"] = email
-                    val id = task.result?.user?.uid
+                val id = task.result?.user?.uid
 
                 if (id != null) {
-                    db.collection("users").document(id).set(
-                        newUser
-                    ).addOnSuccessListener {
-                        Log.d("addSuc", "success")
-                    }.addOnFailureListener {
-                        Log.w("addErr", it.toString())
-                    }
+                    val newUser = hashMapOf<String, Any>()
+                    newUser["collection"] = "users"
+                    newUser["function"] = 0
+                    newUser["uid"] = id
+                    newUser["username"] = user
+                    newUser["email"] = email
+
+                    val data = Data.Builder().putAll(newUser).build()
+                    val request = OneTimeWorkRequest.Builder(DbWorker::class.java).setInputData(data).build()
+                    WorkManager.getInstance(this).enqueue(request)
 
                     startActivity(Intent(this, MenuActivity::class.java))
                     }

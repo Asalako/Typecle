@@ -19,7 +19,11 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".SignUpActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".ArticleActivity" />
         <activity android:name=".CategoriesActivity">
@@ -33,6 +37,7 @@
             android:name=".GameActivity"
             android:label="@string/title_activity_menu"
             android:theme="@style/AppTheme.NoActionBar" />
+        <service android:name=".services.DbService"/>
         <receiver android:name=".notifications.NotificationReceiver"/>
     </application>
 
