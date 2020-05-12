@@ -4,9 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -14,7 +12,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_menu.view.*
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
@@ -87,7 +84,7 @@ class MenuActivity : AppCompatActivity() {
 
     private fun logout() {
         FirebaseAuth.getInstance().signOut()
-        startActivity(Intent(this, SignInActivity::class.java))
+        startActivity(Intent(this, LoginActivity::class.java))
     }
 
     fun dbtest(v: View) {
@@ -101,7 +98,7 @@ class MenuActivity : AppCompatActivity() {
         // Add a new document with a generated ID
 
         // Add a new document with a generated ID
-        db.collection("users").document()
+        //db.collection("users").document()
         db.collection("users")
             .add(user)
             .addOnSuccessListener { documentReference ->

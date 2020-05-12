@@ -2,6 +2,7 @@
     <string name="app_name">Typecle</string>
     <string name="title_activity_login">Login in</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
     <string name="action_reg">Register</string>
     <string name="action_sign_in_short">Create Account</string>
