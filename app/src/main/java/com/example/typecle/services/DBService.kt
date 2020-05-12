@@ -1,4 +1,4 @@
-package com.example.typecle
+package com.example.typecle.services
 
 import android.app.IntentService
 import android.content.Intent
@@ -19,7 +19,7 @@ private const val EXTRA_PARAM2 = "com.example.typecle.extra.PARAM2"
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-class ApiService : IntentService("ApiService") {
+class DBService : IntentService("ApiService") {
 
     override fun onHandleIntent(intent: Intent?) {
         when (intent?.action) {
@@ -62,7 +62,7 @@ class ApiService : IntentService("ApiService") {
         // TODO: Customize helper method
         @JvmStatic
         fun startActionFoo(context: Context, param1: String, param2: String) {
-            val intent = Intent(context, ApiService::class.java).apply {
+            val intent = Intent(context, DBService::class.java).apply {
                 action = ACTION_FOO
                 putExtra(EXTRA_PARAM1, param1)
                 putExtra(EXTRA_PARAM2, param2)
