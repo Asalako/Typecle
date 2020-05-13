@@ -24,9 +24,14 @@
     <string name="mode_keep_up">Keep Up</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_leader">Leaderboards</string>
+    <string name="menu_leader">Scores</string>
     <string name="menu_option">Options</string>
     <string name="menu_logout">Log out</string>
 
-    <string name="home_second">Home Second</string>
+    <string name="home_title">Select Game Mode</string>
+
+    <!-- Game Stats -->
+    <string name="mistakes_label">Mistakes: </string>
+    <string name="wpm_label">WPM: </string>
+    <string name="time_label">Time: </string>
 </resources>

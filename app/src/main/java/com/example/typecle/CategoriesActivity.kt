@@ -39,8 +39,10 @@ class CategoriesActivity : AppCompatActivity() {
 
     private fun generateButton(category: String, id: Int) {
         val btn = Button(this)
+        val heightInPixels = (resources.displayMetrics.density * 75).toInt()
+
         btn.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            LinearLayout.LayoutParams.MATCH_PARENT, heightInPixels)
         btn.text = category
         btn.id = id
         layout.addView(btn)
@@ -52,29 +54,13 @@ class CategoriesActivity : AppCompatActivity() {
         val categoryIntent = Intent(this, ArticleActivity::class.java)
         categoryIntent.putExtra("category", category)
         startActivity(categoryIntent)
+        finish()
     }
 
     override fun onStop() {
         super.onStop()
         //startService(Intent(this, DbService::class.java))
         //notificationTest()
-
-        val user: MutableMap<String, Any> = HashMap()
-        user["collection"] = "users"
-        user["function"] = 1
-        user["first"] = "Ada"
-        user["last"] = "Lovelace"
-        user["born"] = 1815
-
-        val data = Data.Builder().putAll(user).build()
-        val request = OneTimeWorkRequest.Builder(DbWorker::class.java).setInputData(data).build()
-
-
-        WorkManager.getInstance(this).enqueue(request)
-        val stats = WorkManager.getInstance(this).getWorkInfoByIdLiveData(request.id)
-            .observe(this, Observer {
-                Log.d("WM",it.state.name)
-            })
 
     }
 

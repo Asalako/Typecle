@@ -5,14 +5,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.typecle.newsapi.Article
+import com.example.typecle.services.DbWorker
+import com.google.firebase.auth.FirebaseAuth
+import java.time.LocalDate
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class ArticleActivity : AppCompatActivity() {
@@ -26,7 +33,7 @@ class ArticleActivity : AppCompatActivity() {
     private lateinit var category: String
     private lateinit var textView: TextView
     private lateinit var layout: LinearLayout
-    private lateinit var layout_fav: LinearLayout
+    private lateinit var layoutFav: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article)
@@ -37,7 +44,7 @@ class ArticleActivity : AppCompatActivity() {
 
         //textView = findViewById<TextView>(R.id.textView2)
         layout = findViewById(R.id.article_layout)
-        layout_fav = findViewById(R.id.article_layout_fav)
+        layoutFav = findViewById(R.id.article_layout_fav)
 
         url = "https://newsapi.org/v2/top-headlines?page=1&pagesize=100&country=$country" +
                 "&category=$category&apiKey=$apiKey"
@@ -103,19 +110,41 @@ class ArticleActivity : AppCompatActivity() {
         btn.id = id
         btnFav.id = id + 100
         layout.addView(btn)
-        layout_fav.addView(btnFav)
+        layoutFav.addView(btnFav)
         btn.setOnClickListener{ openArticleActivity(article) }
         btnFav.setOnClickListener{ saveArticleActivity(article) }
 
     }
 
     private fun openArticleActivity(article: Article) {
-        val categoryIntent = Intent(this, GameActivity::class.java)
-        categoryIntent.putExtra("chosenArticle", article)
-        startActivity(categoryIntent)
+        val articleIntent = Intent(this, GameActivity::class.java)
+        articleIntent.putExtra("chosenArticle", article)
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(articleIntent)
+        finish()
     }
 
     private fun saveArticleActivity(article: Article) {
-        
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val articleMap: MutableMap<String, Any> = HashMap()
+            articleMap["source"] = article.getSource().toString()
+            articleMap["author"] = article.getAuthor().toString()
+            articleMap["title"] = article.getTitle().toString()
+            articleMap["description"] = article.getDescription().toString()
+            articleMap["url"] = article.getUrl().toString()
+            articleMap["image"] = article.getImage().toString()
+            articleMap["publishDate"] = article.getDate().toString()
+            articleMap["content"] = article.getContent().toString()
+            articleMap["uid"] = uid
+            articleMap["function"] = 2
+
+            val data = Data.Builder().putAll(articleMap).build()
+            val request = OneTimeWorkRequest.Builder(DbWorker::class.java)
+                .setInputData(data).build()
+            WorkManager.getInstance(this).enqueue(request)
+
+            Toast.makeText(this, "Article Added To Favs", Toast.LENGTH_SHORT).show()
+        }
     }
 }

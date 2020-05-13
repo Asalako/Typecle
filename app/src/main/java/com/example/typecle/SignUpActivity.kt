@@ -1,18 +1,23 @@
 package com.example.typecle
 
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.typecle.services.DbWorker
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+
 
 class SignUpActivity : AppCompatActivity() {
     private lateinit var emailField: EditText
@@ -33,6 +38,7 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     fun signUp(v: View) {
+
         val email = emailField.text.toString()
         val user = username.text.toString()
         val pass = password.text.toString()
@@ -49,6 +55,10 @@ class SignUpActivity : AppCompatActivity() {
         else if (pass.isEmpty()) {
             password.error = "Enter Password"
             password.requestFocus()
+        }
+        else if (!isOnline(applicationContext)) {
+            Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show()
+
         }
         else if (usernameCheck(user)) {
             Toast.makeText(this, "Username Taken", Toast.LENGTH_SHORT).show()
@@ -113,6 +123,26 @@ class SignUpActivity : AppCompatActivity() {
         if (boolean) {
             boolean = false
             return true
+        }
+        return false
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "NetworkCapabilities.TRANSPORT_ETHERNET")
+                return true
+            }
         }
         return false
     }
