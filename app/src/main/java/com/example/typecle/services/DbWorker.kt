@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class DbWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
     private val db = FirebaseFirestore.getInstance()
@@ -16,6 +17,12 @@ class DbWorker(context: Context, workerParams: WorkerParameters) : Worker(contex
         when (data["function"]) {
             0 -> {
                 dbAddUser()
+            }
+            1 -> {
+                dbAddScore()
+            }
+            2 -> {
+                dbAddArticle()
             }
             else -> {
                 return Result.failure()
@@ -42,6 +49,36 @@ class DbWorker(context: Context, workerParams: WorkerParameters) : Worker(contex
         }.addOnFailureListener {
             Log.w("addErr", it.toString())
         }
+    }
+
+    private fun dbAddScore() {
+
+        val fields = arrayOf("articleId","gameMode", "title", "mistakes", "time", "wpm")
+        val score = convertToMap(fields)
+        val ref = "users/${data["uid"].toString()}/scores"
+        val scoreId = "${data["uid"].toString()}|${score["articleId"]}"
+
+        db.collection(ref).document(scoreId).set(score, SetOptions.merge())
+
+    }
+
+    private fun dbAddArticle() {
+        val fields = arrayOf("source","author", "title", "description", "url", "image",
+            "publishDate", "content")
+        val article = convertToMap(fields)
+
+        val ref = "users/${data["uid"].toString()}/articles"
+        val articleId = "${data["source"].toString()}|${data["title"]}"
+        db.collection(ref).document(articleId).set(article, SetOptions.merge())
+    }
+
+    private fun convertToMap(fields: Array<String>): MutableMap<String, Any> {
+        val map : MutableMap<String, Any> = HashMap()
+
+        for (field in fields) {
+            map[field] = data[field] as Any
+        }
+        return map
     }
 
     private fun dbTest() {

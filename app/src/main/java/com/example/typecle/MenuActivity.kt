@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -34,7 +35,7 @@ class MenuActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container, OptionFragment()
+                R.id.fragment_container, HomeFragment()
             ).commit()
             navView.setCheckedItem(R.id.nav_home)
         }
@@ -42,6 +43,11 @@ class MenuActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.nav_home -> {
+                    supportFragmentManager.beginTransaction().replace(
+                        R.id.fragment_container, HomeFragment()
+                    ).commit()
+                }
+                R.id.nav_options -> {
                     supportFragmentManager.beginTransaction().replace(
                         R.id.fragment_container, OptionFragment()
                     ).commit()
@@ -86,6 +92,26 @@ class MenuActivity : AppCompatActivity() {
     private fun logout() {
         FirebaseAuth.getInstance().signOut()
         startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+
+    fun openTimeTrial(v: View) {
+        val modeIntent = Intent(this, CategoriesActivity::class.java)
+        modeIntent.putExtra("mode", "time trial")
+            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(modeIntent)
+    }
+
+    fun openFreeRun(v: View) {
+        Toast.makeText(this,"Coming Soon", Toast.LENGTH_SHORT).show()
+    }
+
+    fun openKeepUp(v: View) {
+        Toast.makeText(this,"Coming Soon", Toast.LENGTH_SHORT).show()
+    }
+
+    fun openPerfectRun(v: View) {
+        Toast.makeText(this,"Coming Soon", Toast.LENGTH_SHORT).show()
     }
 
     fun dbtest(v: View) {

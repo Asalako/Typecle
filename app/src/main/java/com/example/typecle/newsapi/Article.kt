@@ -16,10 +16,10 @@ class Article(
 ): Parcelable {
 
     init {
-        Log.d("working","here")
-        Log.d("Test",toString())
         content = content?.replace(Regex("[\n\r]"), " ")
             ?.replace("  ", " ")?.trim()
+        content = content?.replace(Regex("[^... \\[]*$"), " ")
+            ?.replace("… [", " ")?.trim()
 
     }
 
@@ -60,7 +60,7 @@ class Article(
         return url
     }
 
-    fun getImageUrl(): String? {
+    fun getImage(): String? {
         return image
     }
 

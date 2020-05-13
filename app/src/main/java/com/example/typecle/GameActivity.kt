@@ -1,21 +1,27 @@
 package com.example.typecle
 
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.Chronometer
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.example.typecle.newsapi.Article
-import kotlin.math.floor
-import kotlin.text.Regex.Companion.escape
+import com.example.typecle.services.DbWorker
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.end_results_dialog.*
 
 class GameActivity : AppCompatActivity() {
 
@@ -26,14 +32,19 @@ class GameActivity : AppCompatActivity() {
     private var mistakeFlag = false
     private var running = false
     private var pauseOffset: Long = 0
-    private var status = false
+    private val mode = "time trial"
 
     private lateinit var contentView: TextView
     private lateinit var content: String
     private lateinit var typeBox: EditText
     private lateinit var stopWatch: Chronometer
     private lateinit var pauseDialog: Dialog
+    private lateinit var resultDialog: Dialog
     private lateinit var article: Article;
+
+    private lateinit var resultTime: TextView
+    private lateinit var resultWpm: TextView
+    private lateinit var resultMistakes: TextView
 
     private var editor: TextWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
@@ -63,7 +74,7 @@ class GameActivity : AppCompatActivity() {
             if (typeBox.text.isEmpty()) {
                 return
             }
-            var value = typeBox.text.last()
+            val value = typeBox.text.last()
             checkInput(value)
 
         }
@@ -73,11 +84,13 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        article = intent.getParcelableExtra<Article>("chosenArticle")
+        article = intent.getParcelableExtra<Article>("chosenArticle") as Article
 
         contentView = findViewById(R.id.content_box)
-        contentView.text = article.getContent()
-        content = article.getContent().toString()
+//        contentView.text = article.getContent()
+//        content = article.getContent().toString()
+        contentView.text = "Test Content"               //testing
+        content = "Test Content"
         Log.d("gameTestContent", content)
 
         typeBox = findViewById(R.id.type_box)
@@ -108,6 +121,7 @@ class GameActivity : AppCompatActivity() {
                 Log.d("gameTestCount", "$count") //testing
             }
             else {
+                endGame()
                 stopStopWatch()
             }
             mistakeFlag = false
@@ -172,7 +186,22 @@ class GameActivity : AppCompatActivity() {
         pauseDialog.dismiss()
     }
 
-    fun resetStopWatch(v: View) {
+    fun pauseReset(v: View) {
+        reset()
+        pauseDialog.dismiss()
+    }
+
+    fun endGameReset(v: View) {
+        reset()
+        resultDialog.dismiss()
+    }
+
+    fun killGame(v: View) {
+        val intent = Intent(this, MenuActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+    private fun reset() {
         stopWatch.base = SystemClock.elapsedRealtime()
         pauseOffset = 0
         count = 0
@@ -185,7 +214,6 @@ class GameActivity : AppCompatActivity() {
         content = article.getContent().toString()
         stopStopWatch()
         addStartListener()
-        pauseDialog.dismiss()
     }
 
     private fun String.replace(count: Int, value: Char): String {
@@ -209,8 +237,45 @@ class GameActivity : AppCompatActivity() {
         typeBox.addTextChangedListener(startTime)
     }
 
-    fun endGame() {
+    private fun endGame() {
+        val time = ((SystemClock.elapsedRealtime() - stopWatch.base) / 1000).toDouble()
 
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val score: MutableMap<String, Any> = HashMap()
+            score["time"] = time
+            score["wpm"] = wpm
+            score["articleId"] = "${article.getSource()}|${article.getTitle()}"
+            score["title"] = article.getTitle().toString()
+            score["mistakes"] = mistakes
+            score["gameMode"] = mode
+            score["uid"] = uid
+            score["function"] = 1
+
+            val data = Data.Builder().putAll(score).build()
+            val request = OneTimeWorkRequest.Builder(DbWorker::class.java).setInputData(data).build()
+            WorkManager.getInstance(this).enqueue(request)
+        }
+
+        val minutes = time / 1000 / 60
+        val seconds = time / 1000 % 60
+        val string = "Time: $minutes:$seconds"
+        resultDialog = Dialog(this)
+        resultDialog.setContentView(R.layout.end_results_dialog)
+        resultDialog.show()
+
+//        resultTime = findViewById(R.id.result_time)
+//        resultMistakes = findViewById(R.id.result_mistake)
+//        resultWpm = findViewById(R.id.result_wpm)
+//        resultTime.text = string
+//        resultMistakes.text = mistakes.toString()
+//        resultWpm.text = wpm.toString()
+
+    }
+
+    fun openLink(v: View) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(article.getUrl()))
+        startActivity(browserIntent)
     }
 
 
