@@ -15,13 +15,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.example.typecle.newsapi.Article
 import com.example.typecle.services.DbWorker
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.end_results_dialog.*
+
 
 class GameActivity : AppCompatActivity() {
 
@@ -253,7 +251,10 @@ class GameActivity : AppCompatActivity() {
             score["function"] = 1
 
             val data = Data.Builder().putAll(score).build()
-            val request = OneTimeWorkRequest.Builder(DbWorker::class.java).setInputData(data).build()
+            val constraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED).build()
+            val request = OneTimeWorkRequest.Builder(DbWorker::class.java)
+                .setConstraints(constraints).setInputData(data).build()
             WorkManager.getInstance(this).enqueue(request)
         }
 
