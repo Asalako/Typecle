@@ -13,19 +13,21 @@ import com.example.typecle.R
 class NotificationReceiver: BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
-//        val message = intent?.getStringExtra("toastMessage")
-//        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+
+        //Setting the notification based on the channel
         val notificationManager = context?.let { NotificationManagerCompat.from(it) }
 
         val title = "Practice!"
-        val message = "If you want to get"
+        val message = "If you want to get better at typing, keep up the practice"
 
+        //notification settings
         val notification = context?.let {
             NotificationCompat.Builder(it, App.CHANNEL_1_ID)
                 .setSmallIcon(R.drawable.ic_keyboard_black_24dp).setContentTitle(title)
                 .setContentText(message).setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE).setColor(Color.BLUE).build()
         }
+        //selecting the notification channel
         if (notification != null) {
             notificationManager?.notify(1, notification)
         }

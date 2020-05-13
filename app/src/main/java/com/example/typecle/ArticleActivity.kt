@@ -34,18 +34,20 @@ class ArticleActivity : AppCompatActivity() {
     private lateinit var textView: TextView
     private lateinit var layout: LinearLayout
     private lateinit var layoutFav: LinearLayout
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_article)
 
+        //retrieving selected category
         category = intent.getStringExtra("category") ?: ""
-        Log.d("intentSent",category)
+        Log.d("intentSent",category) //testing
         val country = "gb"
 
-        //textView = findViewById<TextView>(R.id.textView2)
         layout = findViewById(R.id.article_layout)
         layoutFav = findViewById(R.id.article_layout_fav)
 
+        //requesting the articles from the newsapi
         url = "https://newsapi.org/v2/top-headlines?page=1&pagesize=100&country=$country" +
                 "&category=$category&apiKey=$apiKey"
         request = Volley.newRequestQueue(this)
@@ -53,11 +55,10 @@ class ArticleActivity : AppCompatActivity() {
 
     }
 
-    fun test(v: View) {
-        Toast.makeText(this,"works",Toast.LENGTH_LONG).show()
-    }
-
+    //Converts json response into a list of articles objects
     private fun getResponse() {
+
+        //http request to get new articles
         val jsonRequest = JsonObjectRequest(
             Request.Method.GET, url, null,
             Response.Listener {
@@ -65,6 +66,8 @@ class ArticleActivity : AppCompatActivity() {
                 totalResult = it.getInt("totalResults")
                 url = it.toString()
                 val jsonArr = it.getJSONArray("articles")
+
+                //instantiating an object based on the json data and adding it to a list
                 for (i in 0 until jsonArr.length() ) {
                     val data = jsonArr.getJSONObject(i)
                     val currentArticle = Article(
@@ -82,6 +85,8 @@ class ArticleActivity : AppCompatActivity() {
                 }
                 if (status == "ok") {
                     var id = 10
+
+                    //Generating the buttons based on the article
                     for (article in articles) {
                         generateArticleButtons(article, id)
                         id++
@@ -94,7 +99,12 @@ class ArticleActivity : AppCompatActivity() {
         request.add(jsonRequest)
     }
 
+    //Creates the buttons, adding title and click event
     private fun generateArticleButtons(article: Article, id: Int) {
+
+        //creating the button with the layout params
+        //btn to open the game
+        //btnFav to save article
         val btn = Button(this)
         val btnFav = Button(this)
 
@@ -105,8 +115,9 @@ class ArticleActivity : AppCompatActivity() {
         btnFav.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, widthInPixels)
 
+        //Setting text and click event
         btn.text = article.getTitle()
-        btnFav.text = id.toString()
+        btnFav.text = "save"
         btn.id = id
         btnFav.id = id + 100
         layout.addView(btn)
@@ -116,6 +127,7 @@ class ArticleActivity : AppCompatActivity() {
 
     }
 
+    //Opens Game and sends the article
     private fun openArticleActivity(article: Article) {
         val articleIntent = Intent(this, GameActivity::class.java)
         articleIntent.putExtra("chosenArticle", article)
@@ -124,9 +136,13 @@ class ArticleActivity : AppCompatActivity() {
         finish()
     }
 
+    //Save article in database
     private fun saveArticleActivity(article: Article) {
+        //check for a logged in user
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null) {
+
+            //storing information to be sent to service for background operation
             val articleMap: MutableMap<String, Any> = HashMap()
             articleMap["source"] = article.getSource().toString()
             articleMap["author"] = article.getAuthor().toString()

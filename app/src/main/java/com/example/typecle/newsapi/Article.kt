@@ -15,7 +15,10 @@ class Article(
     private var content: String?
 ): Parcelable {
 
+    //Parcelable used to send object as intent
+
     init {
+        //Getting rid of unwanted characters such as newlines
         content = content?.replace(Regex("[\n\r]"), " ")
             ?.replace("  ", " ")?.trim()
         content = content?.replace(Regex("[^... \\[]*$"), " ")

@@ -44,15 +44,15 @@ class GameActivity : AppCompatActivity() {
     private lateinit var resultWpm: TextView
     private lateinit var resultMistakes: TextView
 
+    //listener for edit text view that activates when a new char is entered
     private var editor: TextWatcher = object : TextWatcher {
         override fun afterTextChanged(s: Editable) {
             if (typeBox.text.isEmpty()) {
                 return
             }
 
+            //calculating word per minute after every 2 words entered
             if (content[count].isWhitespace()) {
-                Log.d("gameTestWpm", content[count].isWhitespace().toString() + " $wordCount|") //testing
-
                 wordCount++
                 if (wordCount % 2 == 0) {
                     calculateWPM()
@@ -68,7 +68,7 @@ class GameActivity : AppCompatActivity() {
         //Activates when user inputs a character
         override fun onTextChanged(s: CharSequence, start: Int, before: Int,
             count: Int) {
-            //prevents error if input is empty
+            //prevents error if input is empty else checks the give value
             if (typeBox.text.isEmpty()) {
                 return
             }
@@ -82,18 +82,19 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //retrieving the selected article and display views
         article = intent.getParcelableExtra<Article>("chosenArticle") as Article
 
         contentView = findViewById(R.id.content_box)
-//        contentView.text = article.getContent()
-//        content = article.getContent().toString()
-        contentView.text = "Test Content"               //testing
-        content = "Test Content"
+        contentView.text = article.getContent()
+        content = article.getContent().toString()
+//        contentView.text = "Test Content"               //testing
+//        content = "Test Content"
         Log.d("gameTestContent", content)
 
         typeBox = findViewById(R.id.type_box)
         stopWatch = findViewById(R.id.time_view)
-        //stopWatch.setOnChronometerTickListener {  } use to stop game after x amount of time 1hr
+
         typeBox.requestFocus(); //Opening keyboard on Activity creation
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE)
 
@@ -101,6 +102,7 @@ class GameActivity : AppCompatActivity() {
         addStartListener()
     }
 
+    //starts the clock for first input
     fun startClock(listener: TextWatcher) {
         startStopWatch()
         typeBox.removeTextChangedListener(listener)
@@ -108,23 +110,32 @@ class GameActivity : AppCompatActivity() {
 
     //checks if the input is correct
     fun checkInput(value: Char) {
-        //Toast.makeText(this, value, Toast.LENGTH_SHORT).show()
+
         val correctChar = content[count]
         if (value == correctChar) {
+
+            //replacing the correct char with an underscore
             content = content.replace(count, '_')
             Log.d("gameTestCorrect", "$value = $correctChar") //testing
             contentView.text = content
+
+            //selecting the next char
             if (count < content.length - 1) {
                 count++
                 Log.d("gameTestCount", "$count") //testing
             }
+            //end is reached, ends game
             else {
                 endGame()
                 stopStopWatch()
             }
+            //resetting flag to indicating a mistake can be counted
+            //preventing adding multiple mistakes in a row
             mistakeFlag = false
 
         }
+
+        //if wrong add to mistakes
         else {
             setMistakes()
             Log.d("gameTestIncorrect", "$value != $correctChar") //testing
@@ -143,10 +154,13 @@ class GameActivity : AppCompatActivity() {
 
     }
 
+    //calculates words per minute
     private fun calculateWPM() {
+        //finds the total minutes spent
         val minutes: Double =
             ((SystemClock.elapsedRealtime() - stopWatch.base) / 1000).toDouble()/ 60
 
+        //displays the calculated wpm
         val wpm = wordCount.toDouble() / minutes
         val wpmView = findViewById<TextView>(R.id.wpm_view)
         wpmView.text = String.format("%.2f",wpm)
@@ -154,6 +168,7 @@ class GameActivity : AppCompatActivity() {
 
     }
 
+    //starts the watch and sets flag for currently running to true
     private fun startStopWatch() {
         if (!running) {
             stopWatch.base = SystemClock.elapsedRealtime() - pauseOffset
@@ -162,6 +177,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    //stops the watch and sets flag for currently running to true
     private fun stopStopWatch() {
         if (running) {
             stopWatch.stop()
@@ -170,6 +186,7 @@ class GameActivity : AppCompatActivity() {
         }
     }
 
+    //Pauses the time and displays dialog with options
     fun pause(v: View) {
         stopStopWatch()
         //val playIcon = resources.getDrawable(R.drawable.ic_play_foreground)
@@ -179,26 +196,32 @@ class GameActivity : AppCompatActivity() {
         pauseDialog.show()
     }
 
+    //resumes game from paused state
     fun resume(v: View) {
         startStopWatch()
         pauseDialog.dismiss()
     }
 
+    //Resets the games from pause menu
     fun pauseReset(v: View) {
         reset()
         pauseDialog.dismiss()
     }
 
+    //Resets the game from end screen
     fun endGameReset(v: View) {
         reset()
         resultDialog.dismiss()
     }
 
+    //End the activity and returns to menu screen
     fun killGame(v: View) {
         val intent = Intent(this, MenuActivity::class.java)
         startActivity(intent)
         finish()
     }
+
+    //resets all the values back to default
     private fun reset() {
         stopWatch.base = SystemClock.elapsedRealtime()
         pauseOffset = 0
@@ -214,10 +237,13 @@ class GameActivity : AppCompatActivity() {
         addStartListener()
     }
 
+    //replaces given character to an underscore
     private fun String.replace(count: Int, value: Char): String {
         return this.substring(0,count) + value + this.substring(count+1)
     }
 
+
+    //lister for edit text to start the clock on first input, is removed after that
     private fun addStartListener() {
         val startTime: TextWatcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -235,11 +261,16 @@ class GameActivity : AppCompatActivity() {
         typeBox.addTextChangedListener(startTime)
     }
 
+    //displays end game and uploads results
     private fun endGame() {
+        //time in seconds
         val time = ((SystemClock.elapsedRealtime() - stopWatch.base) / 1000).toDouble()
 
+        //check for a logged in user
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null) {
+
+            //retrieving data to be stored
             val score: MutableMap<String, Any> = HashMap()
             score["time"] = time
             score["wpm"] = wpm
@@ -250,6 +281,7 @@ class GameActivity : AppCompatActivity() {
             score["uid"] = uid
             score["function"] = 1
 
+            //sending data and performing database operation in the back ground
             val data = Data.Builder().putAll(score).build()
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED).build()
@@ -258,22 +290,13 @@ class GameActivity : AppCompatActivity() {
             WorkManager.getInstance(this).enqueue(request)
         }
 
-        val minutes = time / 1000 / 60
-        val seconds = time / 1000 % 60
-        val string = "Time: $minutes:$seconds"
         resultDialog = Dialog(this)
         resultDialog.setContentView(R.layout.end_results_dialog)
         resultDialog.show()
 
-//        resultTime = findViewById(R.id.result_time)
-//        resultMistakes = findViewById(R.id.result_mistake)
-//        resultWpm = findViewById(R.id.result_wpm)
-//        resultTime.text = string
-//        resultMistakes.text = mistakes.toString()
-//        resultWpm.text = wpm.toString()
-
     }
 
+    //opens browser with link to the full article
     fun openLink(v: View) {
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(article.getUrl()))
         startActivity(browserIntent)

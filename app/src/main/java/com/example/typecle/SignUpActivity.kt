@@ -127,6 +127,7 @@ class SignUpActivity : AppCompatActivity() {
         return false
     }
 
+    //check if any internet connection, returns false if there is none
     private fun isOnline(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

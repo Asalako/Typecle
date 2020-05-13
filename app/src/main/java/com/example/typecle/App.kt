@@ -18,15 +18,17 @@ class App: Application() {
         createNotificationChannels()
     }
 
+    //Creates the notification channels
     private fun createNotificationChannels() {
+        //Check to see if the build version is met
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel1 =NotificationChannel(CHANNEL_1_ID, "Channel 1",
             NotificationManager.IMPORTANCE_HIGH)
-            channel1.description = "This is channel 1"
+            channel1.description = "Important"
 
             val channel2 =NotificationChannel(CHANNEL_2_ID, "Channel 2",
                 NotificationManager.IMPORTANCE_LOW)
-            channel1.description = "This is channel 2"
+            channel1.description = "General"
 
             val manager = getSystemService(NotificationManager::class.java)
             manager?.createNotificationChannel(channel1)

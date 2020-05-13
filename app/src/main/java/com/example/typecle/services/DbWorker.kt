@@ -7,6 +7,7 @@ import androidx.work.WorkerParameters
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
+//Class that performs write database operations in the background
 class DbWorker(context: Context, workerParams: WorkerParameters) : Worker(context, workerParams) {
     private val db = FirebaseFirestore.getInstance()
     private var data: MutableMap<String, Any> = HashMap()
@@ -14,6 +15,7 @@ class DbWorker(context: Context, workerParams: WorkerParameters) : Worker(contex
     override fun doWork(): Result {
         data = inputData.keyValueMap
 
+        //selecting the type of function to perform based on the set number
         when (data["function"]) {
             0 -> {
                 dbAddUser()
@@ -32,46 +34,55 @@ class DbWorker(context: Context, workerParams: WorkerParameters) : Worker(contex
         return Result.success()
     }
 
+    //Adds a new user to the database
     private fun dbAddUser() {
 
+        //Taking the necessary data to be upload as not all are relevant to the user
         val collection = data["collection"].toString()
-        val newUser : MutableMap<String, Any> = HashMap()
         val fields = arrayOf("email","username")
+        val newUser = convertToMap(fields)
 
-        for (field in fields) {
-            newUser[field] = data[field] as Any
-        }
-
+        //database which uploads the user details with a custom ID
         db.collection(collection).document( data["uid"].toString() ).set(
             newUser
         ).addOnSuccessListener {
-            Log.d("addSuc", "success")
+            Log.d("addSuc", "success") //testing
         }.addOnFailureListener {
-            Log.w("addErr", it.toString())
+            Log.w("addErr", it.toString()) //testing
         }
     }
 
+    //Adds/updates a new score after completing a game
     private fun dbAddScore() {
 
+        //Taking the necessary data to be upload as not all are relevant to the user
         val fields = arrayOf("articleId","gameMode", "title", "mistakes", "time", "wpm")
         val score = convertToMap(fields)
+
+        //reference in the db and creating an ID for score
         val ref = "users/${data["uid"].toString()}/scores"
         val scoreId = "${data["uid"].toString()}|${score["articleId"]}"
 
+        //database operation to add/update score to the database
         db.collection(ref).document(scoreId).set(score, SetOptions.merge())
 
     }
 
+    //Stores an article the user wants to save
     private fun dbAddArticle() {
+
+        //Taking the necessary data to be upload as not all are relevant to the user
         val fields = arrayOf("source","author", "title", "description", "url", "image",
             "publishDate", "content")
         val article = convertToMap(fields)
 
+        //reference in the db and creating an ID for
         val ref = "users/${data["uid"].toString()}/articles"
         val articleId = "${data["source"].toString()}|${data["title"]}"
         db.collection(ref).document(articleId).set(article, SetOptions.merge())
     }
 
+    //takes the specified fields in the map and stores it into another map
     private fun convertToMap(fields: Array<String>): MutableMap<String, Any> {
         val map : MutableMap<String, Any> = HashMap()
 
@@ -79,31 +90,6 @@ class DbWorker(context: Context, workerParams: WorkerParameters) : Worker(contex
             map[field] = data[field] as Any
         }
         return map
-    }
-
-    private fun dbTest() {
-
-        // Add a new document with a generated ID
-        //db.collection("users").document()
-        val collection = data["collection"].toString()
-        val updateMap : MutableMap<String, Any> = HashMap()
-        val fields = arrayOf("born","first","last")
-
-        updateMap[fields[0]] = data[fields[0]].toString()
-        updateMap[fields[1]] = data[fields[1]].toString()
-        updateMap[fields[2]] = data[fields[2]].toString()
-        Log.d("strValue", data.toString())
-
-        db.collection(collection)
-            .add(updateMap)
-            .addOnSuccessListener { documentReference ->
-                Log.d(
-                    "dbSuc",
-                    "DocumentSnapshot added with ID: " + documentReference.id
-                )
-            }
-            .addOnFailureListener { e -> Log.w("dbError", "Error adding document", e) }
-
     }
 
 }

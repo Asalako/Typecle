@@ -39,11 +39,12 @@
 
     <TextView
         android:id="@+id/content_box"
-        android:layout_width="394dp"
+        android:layout_width="match_parent"
         android:layout_height="134dp"
         android:layout_marginTop="160dp"
         android:autoText="false"
-        android:background="#9C27B0"
+        android:background="@color/colorPrimary"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="parent"
@@ -105,17 +106,6 @@
         app:layout_constraintBottom_toTopOf="@+id/content_box"
         app:layout_constraintStart_toEndOf="@+id/mistake_label"
         app:layout_constraintTop_toBottomOf="@+id/wpm_view" />
-
-    <Button
-        android:id="@+id/open_key_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="92dp"
-        android:text="Open Keyboard"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/pause_button"
